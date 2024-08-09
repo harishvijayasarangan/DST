@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Scent Technology</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #f0f0f0;
+            color: white;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+        header {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header .logo {
+            display: flex;
+            align-items: center;
+        }
+        header .logo img {
+            height: 120px;
+            opacity: 1.0;
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+        header nav a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+            width: 80%;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .content h1 {
+            font-size: 48px;
+            font-weight: bold;
+            color: white; /* Revert to basic white text */
+        }
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 300px;
+            height: 450px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+        .chat-header {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-header img {
+            height: 81px; /* 50% bigger than previous 54px */
+            margin-bottom: 0; /* Remove bottom margin to bring text closer */
+        }
+        .chat-header .bot-text {
+            color: white;
+            font-size: 12px; /* 50% smaller than previous 18px */
+            margin-top: -5px; /* Bring text closer to the logo */
+        }
+        .chat-box {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .chat-input {
+            width: 100%;
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        .chat-input input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 0;
+            outline: none;
+            font-size: 16px;
+            background-color: transparent;
+            color: white;
+        }
+        .chat-input input::placeholder {
+            color: white; /* Set placeholder text color to white */
+        }
+        .chat-input button {
+            padding: 10px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="video-background">
+        <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logoc-removebg.png') }}" alt="DST Logo">
+        </div>
+        <nav>
+            <a href="#">Products</a>
+            <a href="#">Solutions</a>
+            <a href="#">Training & Services</a>
+            <a href="#">Resources</a>
+            <a href="#">Partners</a>
+            <a href="#">About</a>
+        </nav>
+    </header>
+    <div class="content">
+        <h1>Digital Scent Technology</h1>
+    </div>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="{{ url_for('static', filename='logoc-removebg.png') }}" alt="DST Logo">
+            <div class="bot-text">Bot</div>
+        </div>
+        <div id="chatbox" class="chat-box"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="How can I help you today?" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        function addMessageToChatbox(message, sender) {
+            const chatbox = document.getElementById('chatbox');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `${sender}: ${message}`;
+            chatbox.appendChild(messageElement);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const message = userInput.value;
+            addMessageToChatbox(message, 'You');
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            const data = await response.json();
+            addMessageToChatbox(data.response, 'Bot');
+            userInput.value = '';
+        }
+
+        // Voiceflow Chatbot Script
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+                window.voiceflow.chat.load({
+                    verify: { projectID: '66ac68f86ef20f4bbd9f9119' },
+                    url: 'https://general-runtime.voiceflow.com',
+                    versionID: 'production'
+                });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
+</body>
+</html>
