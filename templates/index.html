@@ -4,148 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Scent Technology</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background-color: #f0f0f0;
-            color: white;
-        }
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            object-fit: cover;
-        }
-        header {
-            width: 100%;
-            padding: 10px;
-            background-color: transparent;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        header .logo {
-            display: flex;
-            align-items: center;
-        }
-        header .logo img {
-            height: 120px;
-            opacity: 1.0;
-        }
-        header nav {
-            display: flex;
-            align-items: center;
-        }
-        header nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 18px;
-        }
-        header nav a:hover {
-            text-decoration: underline;
-        }
-        .content {
-            position: relative;
-            z-index: 1;
-            width: 80%;
-            margin-top: 50px;
-            text-align: center;
-        }
-        .content h1 {
-            font-size: 48px;
-            font-weight: bold;
-            color: white; /* Revert to basic white text */
-        }
-        .chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            width: 300px;
-            height: 450px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            z-index: 2;
-            backdrop-filter: blur(10px);
-        }
-        .chat-header {
-            width: 100%;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .chat-header img {
-            height: 81px; /* 50% bigger than previous 54px */
-            margin-bottom: 0; /* Remove bottom margin to bring text closer */
-        }
-        .chat-header .bot-text {
-            color: white;
-            font-size: 12px; /* 50% smaller than previous 18px */
-            margin-top: -5px; /* Bring text closer to the logo */
-        }
-        .chat-box {
-            width: 100%;
-            height: 100%;
-            padding: 10px;
-            overflow-y: auto;
-            background-color: transparent;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .chat-input {
-            width: 100%;
-            display: flex;
-            border-top: 1px solid #ccc;
-        }
-        .chat-input input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 0;
-            outline: none;
-            font-size: 16px;
-            background-color: transparent;
-            color: white;
-        }
-        .chat-input input::placeholder {
-            color: white; /* Set placeholder text color to white */
-        }
-        .chat-input button {
-            padding: 10px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <video autoplay muted loop class="video-background">
@@ -168,56 +29,194 @@
     <div class="content">
         <h1>Digital Scent Technology</h1>
     </div>
-    <div class="chat-container">
-        <div class="chat-header">
-            <img src="{{ url_for('static', filename='logoc-removebg.png') }}" alt="DST Logo">
-            <div class="bot-text">Bot</div>
-        </div>
-        <div id="chatbox" class="chat-box"></div>
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="How can I help you today?" />
-            <button onclick="sendMessage()">Send</button>
+    <div class="divider"></div>
+    <div class="profile-background"></div>
+    <div id="about-section" class="about">
+        <img src="{{ url_for('static', filename='profile.jpeg') }}" alt="Profile Photo">
+        <h2>Harish Vijayasarangan</h2>
+        <button onclick="window.location.href='https://www.linkedin.com/in/harishvijayasarangan'">LinkedIn</button>
+        <button onclick="window.location.href='mailto:harishvijayasarangank@gmail.com'">Email</button>
+    </div>
+    <div class="chatbot-icon" onclick="toggleChatbot()">
+        <i class="fas fa-comments"></i>
+    </div>
+    <div class="chatbot-container" id="chatbot" style="display: none;">
+        <div class="card">
+            <div class="card-header text-center">
+                <div class="user_img">
+                    <img src="{{ url_for('static', filename='logoc-removebg.png') }}" alt="DST Logo" style="margin-top: 3px;">
+                </div>
+                <hr class="logo-divider">
+                <div class="user_info">
+                    <hr class="bot-line">
+                </div>
+            </div>
+            <div class="card-body msg_card_body" id="chatbox">
+                <!-- Messages will appear here -->
+            </div>
+            <div class="card-footer">
+                <div class="input-group">
+                    <textarea id="msg" class="form-control type_msg" 
+                        placeholder="Type your message... (Ctrl+V to paste images)"></textarea>
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                    <div class="input-group-append">
+                        <label for="image-upload" class="btn send_btn">
+                            <i class="fas fa-paperclip"></i>
+                        </label>
+                        <button class="btn send_btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script>
-        function addMessageToChatbox(message, sender) {
-            const chatbox = document.getElementById('chatbox');
-            const messageElement = document.createElement('div');
-            messageElement.textContent = `${sender}: ${message}`;
-            chatbox.appendChild(messageElement);
-            chatbox.scrollTop = chatbox.scrollHeight;
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
         }
 
-        async function sendMessage() {
-            const userInput = document.getElementById('user-input');
-            const message = userInput.value;
-            addMessageToChatbox(message, 'You');
+        function sendMessage() {
+            const messageInput = document.getElementById('msg');
+            const message = messageInput.value.trim();
+            const imageInput = document.getElementById('image-upload');
+            
+            if (!message && !imageInput.files.length) return;
 
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message }),
-            });
-
-            const data = await response.json();
-            addMessageToChatbox(data.response, 'Bot');
-            userInput.value = '';
-        }
-
-        // Voiceflow Chatbot Script
-        (function(d, t) {
-            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-            v.onload = function() {
-                window.voiceflow.chat.load({
-                    verify: { projectID: '66ac68f86ef20f4bbd9f9119' },
-                    url: 'https://general-runtime.voiceflow.com',
-                    versionID: 'production'
-                });
+            const formData = new FormData();
+            formData.append('msg', message);
+            
+            if (imageInput.files.length > 0) {
+                formData.append('image', imageInput.files[0]);
             }
-            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
-        })(document, 'script');
+
+            // Add user message to chat
+            const chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `
+                <div class="d-flex justify-content-end mb-4">
+                    <div class="msg_cotainer_send">
+                        ${message}
+                    </div>
+                </div>`;
+
+            // Clear input
+            messageInput.value = '';
+            imageInput.value = '';
+            
+            // Scroll to bottom
+            chatbox.scrollTop = chatbox.scrollHeight;
+
+            // Send to server
+            fetch('/get', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Add AI response to chat
+                chatbox.innerHTML += `
+                    <div class="d-flex justify-content-start mb-4">
+                        <div class="msg_cotainer">
+                            ${data}
+                        </div>
+                    </div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                chatbox.innerHTML += `
+                    <div class="d-flex justify-content-start mb-4">
+                        <div class="msg_cotainer">
+                            Sorry, there was an error processing your request.
+                        </div>
+                    </div>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+
+        window.addEventListener('scroll', function() {
+            const aboutSection = document.getElementById('about-section');
+            const scrollPosition = window.scrollY + window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+
+            if (scrollPosition >= documentHeight) {
+                aboutSection.classList.add('visible');
+            } else {
+                aboutSection.classList.remove('visible');
+            }
+        });
+
+        document.getElementById('msg').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Add this paste event handler
+        document.getElementById('msg').addEventListener('paste', function(e) {
+            const items = e.clipboardData.items;
+            
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    
+                    const blob = items[i].getAsFile();
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        const formData = new FormData();
+                        formData.append('msg', document.getElementById('msg').value);
+                        formData.append('pasted_image', event.target.result);
+                        
+                        // Add user message to chat
+                        const chatbox = document.getElementById('chatbox');
+                        chatbox.innerHTML += `
+                            <div class="d-flex justify-content-end mb-4">
+                                <div class="msg_cotainer_send">
+                                    <img src="${event.target.result}" style="max-width: 200px; border-radius: 10px;">
+                                </div>
+                            </div>`;
+                        
+                        // Clear input
+                        document.getElementById('msg').value = '';
+                        
+                        // Scroll to bottom
+                        chatbox.scrollTop = chatbox.scrollHeight;
+                        
+                        // Send to server
+                        fetch('/get', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            chatbox.innerHTML += `
+                                <div class="d-flex justify-content-start mb-4">
+                                    <div class="msg_cotainer">
+                                        ${data}
+                                    </div>
+                                </div>`;
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            chatbox.innerHTML += `
+                                <div class="d-flex justify-content-start mb-4">
+                                    <div class="msg_cotainer">
+                                        Sorry, there was an error processing your request.
+                                    </div>
+                                </div>`;
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                        });
+                    };
+                    
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
     </script>
 </body>
 </html>
