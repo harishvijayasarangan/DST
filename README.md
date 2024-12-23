@@ -3,9 +3,6 @@
 
 DST is an AI-powered custom enterprise chatbot with custom knowledge built using Flask and JavaScript to provide an interactive user experience dealing with EEG scent interference .
 
-<img width="328" alt="Screenshot 2024-12-23 at 10 00 23 PM" src="https://github.com/user-attachments/assets/f5bdedbc-e197-493b-8f16-1a644b5a93b7" />
-
-
 **Technologies Used**
 llm : llama 3.2 vision 
 
