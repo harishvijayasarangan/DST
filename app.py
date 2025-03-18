@@ -13,8 +13,6 @@ app = Flask(__name__,
     static_folder='static',  
     template_folder='templates' 
 )
-
-# Chatbot Configuration
 OLLAMA_ENDPOINT = "http://localhost:11434/api/generate"
 MAX_IMAGE_SIZE = 10 * 1024 * 1024
 MODEL_NAME = "llama3.2-vision:latest"
