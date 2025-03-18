@@ -11,7 +11,7 @@ import re
 
 app = Flask(__name__, 
     static_folder='static',    # Explicitly set static folder
-    template_folder='templates' # Explicitly set template folder
+    template_folder='templates' 
 )
 
 # Chatbot Configuration
