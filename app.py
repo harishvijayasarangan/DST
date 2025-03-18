@@ -10,7 +10,7 @@ import io
 import re
 
 app = Flask(__name__, 
-    static_folder='static',    # Explicitly set static folder
+    static_folder='static',  
     template_folder='templates' 
 )
 
