@@ -178,8 +178,7 @@ if __name__ == '__main__':
     if os.system("which ollama >/dev/null 2>&1") != 0:
         app.logger.warning("Ollama is not installed. Please install it first.")
         app.logger.warning("You can install it using: curl https://ollama.ai/install.sh | sh")
-    
-    # Verify template and static directories exist
+
     if not os.path.exists('templates'):
         app.logger.error("Templates directory not found!")
         exit(1)
