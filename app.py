@@ -170,7 +170,7 @@ def internal_error(error):
     return render_template('index.html'), 500
 
 if __name__ == '__main__':
-    # Enable debug logging
+
     import logging
     logging.basicConfig(level=logging.DEBUG)
     
