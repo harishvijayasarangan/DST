@@ -153,7 +153,6 @@ def get_chat_response(prompt_data: Dict[str, Any], has_image: bool) -> str:
         app.logger.error(f"Unexpected error in get_chat_response: {str(e)}")
         return "An unexpected error occurred. Please try again."
 
-# Add error handlers
 @app.errorhandler(403)
 def forbidden_error(error):
     app.logger.error(f"403 error: {error}")
@@ -173,8 +172,6 @@ if __name__ == '__main__':
 
     import logging
     logging.basicConfig(level=logging.DEBUG)
-    
-    # Check if Ollama is installed
     if os.system("which ollama >/dev/null 2>&1") != 0:
         app.logger.warning("Ollama is not installed. Please install it first.")
         app.logger.warning("You can install it using: curl https://ollama.ai/install.sh | sh")
