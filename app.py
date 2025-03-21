@@ -18,7 +18,7 @@ MAX_IMAGE_SIZE = 10 * 1024 * 1024
 MODEL_NAME = "llama3.2-vision:latest"
 REQUEST_TIMEOUT = 60
 
-# Initialize conversation history
+
 history: list = []
 
 @app.route('/')
