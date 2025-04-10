@@ -240,6 +240,40 @@ header nav a:hover {
     margin-right: auto;
 }
 
+/* Model Selector Styles */
+.model-selector {
+    display: flex;
+    padding: 0 10px;
+    margin-bottom: 5px;
+}
+
+.model-selector select {
+    background-color: #f0f2f5;
+    border: 1px solid #e4e6eb;
+    border-radius: 15px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    flex: 1;
+}
+
+.model-selector select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+    background-color: white;
+}
+
+.model-info {
+    display: block;
+    font-size: 11px;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
 /* Divider */
 .divider {
     width: 100%;
@@ -250,25 +284,31 @@ header nav a:hover {
 
 /* About Section */
 .about {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     position: fixed;
-    bottom: 20px;
+    bottom: -300px; /* Start offscreen */
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    border-radius: 20px;
     opacity: 0;
-    transition: opacity 1s ease-in-out;
+    transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth easing */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 90%;
+    width: 400px;
 }
 
 .about.visible {
     display: flex;
     opacity: 1;
+    bottom: 40px; /* Final position */
+    transform: translateX(-50%) translateY(0);
 }
 
 .about img {
@@ -277,22 +317,50 @@ header nav a:hover {
     height: 150px;
     margin-bottom: 20px;
     object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.about img:hover {
+    transform: scale(1.05);
 }
 
 .about h2 {
-    font-size: 24px;
+    font-size: 28px;
     color: white;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.about .social-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
 }
 
 .about button {
-    margin: 10px;
-    padding: 10px 20px;
+    margin: 5px;
+    padding: 12px 24px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 50px;
     cursor: pointer;
-    background-color: green;
+    background-color: rgba(40, 167, 69, 0.9);
     color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.about button:hover {
+    background-color: rgba(40, 167, 69, 1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.about button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Profile Background Division */
@@ -301,12 +369,19 @@ header nav a:hover {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100px;
-    background-color: transparent;
-    z-index: 99;
-    transition: background-color 0.3s ease;
+    height: 200px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    z-index: 98;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
 }
 
+.profile-background.visible {
+    opacity: 1;
+}
+
+/* Bot Line */
 .bot-line {
     width: 100%;
     height: 2px;

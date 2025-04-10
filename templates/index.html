@@ -30,17 +30,23 @@
         <h1>Digital Scent Technology</h1>
     </div>
     <div class="divider"></div>
-    <div class="profile-background"></div>
+    <div class="profile-background" id="profile-background"></div>
     <div id="about-section" class="about">
         <img src="{{ url_for('static', filename='profile.jpeg') }}" alt="Profile Photo">
         <h2>Harish Vijayasarangan</h2>
-        <button onclick="window.location.href='https://www.linkedin.com/in/harishvijayasarangan'">LinkedIn</button>
-        <button onclick="window.location.href='mailto:harishvijayasarangank@gmail.com'">Email</button>
+        <div class="social-buttons">
+            <button onclick="window.location.href='https://www.linkedin.com/in/harishvijayasarangan'">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </button>
+            <button onclick="window.location.href='mailto:harishvijayasarangank@gmail.com'">
+                <i class="fas fa-envelope"></i> Email
+            </button>
+        </div>
     </div>
     <div class="chatbot-icon" onclick="toggleChatbot()">
         <i class="fas fa-comments"></i>
     </div>
-    <div class="chatbot-container" id="chatbot" style="display: none;">
+    <div class="chatbot-container" id="chatbot">
         <div class="card">
             <div class="card-header text-center">
                 <div class="user_img">
@@ -52,9 +58,28 @@
                 </div>
             </div>
             <div class="card-body msg_card_body" id="chatbox">
+                <!-- Initial welcome message -->
+                <div class="d-flex justify-content-start mb-4">
+                    <div class="msg_cotainer">
+                        Welcome to Digital Scent Technology! I'm DST Bot, your virtual assistant. How can I help you today?
+                    </div>
+                </div>
                 <!-- Messages will appear here -->
             </div>
             <div class="card-footer">
+                <div class="model-selector">
+                    <select id="model-selector" class="form-control">
+                        <option value="groq">Groq API</option>
+                    </select>
+                    <select id="groq-model-selector" class="form-control">
+                        <option value="gemma2-9b-it" selected>Gemma 2 9B</option>
+                        <option value="llama3-70b-8192">Llama3 70B</option>
+                        <option value="llama3-8b-8192">Llama3 8B</option>
+                        <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+                        <option value="gemma-7b-it">Gemma 7B</option>
+                        <option value="gemma-2-27b-it">Gemma 2 27B</option>
+                    </select>
+                </div>
                 <div class="input-group">
                     <textarea id="msg" class="form-control type_msg" 
                         placeholder="Type your message... (Ctrl+V to paste images)"></textarea>
@@ -74,18 +99,22 @@
     <script>
         function toggleChatbot() {
             const chatbot = document.getElementById('chatbot');
-            chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'block' : 'none';
+            chatbot.style.display = (chatbot.style.display === 'none') ? 'block' : 'none';
         }
 
         function sendMessage() {
             const messageInput = document.getElementById('msg');
             const message = messageInput.value.trim();
             const imageInput = document.getElementById('image-upload');
+            const modelSelector = document.getElementById('model-selector');
+            const groqModelSelector = document.getElementById('groq-model-selector');
             
             if (!message && !imageInput.files.length) return;
 
             const formData = new FormData();
             formData.append('msg', message);
+            formData.append('model', modelSelector.value);
+            formData.append('groq_model', groqModelSelector.value);
             
             if (imageInput.files.length > 0) {
                 formData.append('image', imageInput.files[0]);
@@ -107,6 +136,15 @@
             // Scroll to bottom
             chatbox.scrollTop = chatbox.scrollHeight;
 
+            // Show loading indicator
+            chatbox.innerHTML += `
+                <div class="d-flex justify-content-start mb-4" id="loading-indicator">
+                    <div class="msg_cotainer">
+                        <i class="fas fa-spinner fa-pulse"></i> Processing...
+                    </div>
+                </div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+
             // Send to server
             fetch('/get', {
                 method: 'POST',
@@ -114,11 +152,18 @@
             })
             .then(response => response.json())
             .then(data => {
+                // Remove loading indicator
+                document.getElementById('loading-indicator').remove();
+                
+                // Add model info
+                const modelInfo = `<small class="model-info">Using Groq (${groqModelSelector.value})</small>`;
+                
                 // Add AI response to chat
                 chatbox.innerHTML += `
                     <div class="d-flex justify-content-start mb-4">
                         <div class="msg_cotainer">
                             ${data}
+                            ${modelInfo}
                         </div>
                     </div>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
@@ -137,13 +182,26 @@
 
         window.addEventListener('scroll', function() {
             const aboutSection = document.getElementById('about-section');
-            const scrollPosition = window.scrollY + window.innerHeight;
+            const profileBackground = document.getElementById('profile-background');
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
-
-            if (scrollPosition >= documentHeight) {
+            
+            // Calculate scroll percentage (0 to 1)
+            const scrollPercentage = scrollPosition / (documentHeight - windowHeight);
+            
+            // Start showing profile when scrolled 70% of the way down
+            if (scrollPercentage > 0.7) {
                 aboutSection.classList.add('visible');
+                profileBackground.classList.add('visible');
+                
+                // Optional: Add parallax effect to profile
+                const translateY = Math.min(20, (scrollPercentage - 0.7) * 100);
+                aboutSection.style.transform = `translateX(-50%) translateY(${-translateY}px)`;
             } else {
                 aboutSection.classList.remove('visible');
+                profileBackground.classList.remove('visible');
+                aboutSection.style.transform = 'translateX(-50%) translateY(0)';
             }
         });
 
@@ -217,6 +275,22 @@
                 }
             }
         });
+
+        // Add this to make sure the chatbot is visible when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make sure chatbot is visible on page load
+            document.getElementById('chatbot').style.display = 'block';
+        });
+
+        // Remove event listener for model selector
+        // document.getElementById('model-selector').addEventListener('change', function() {
+        //     const groqModelSelector = document.getElementById('groq-model-selector');
+        //     if (this.value === 'groq') {
+        //         groqModelSelector.style.display = 'block';
+        //     } else {
+        //         groqModelSelector.style.display = 'none';
+        //     }
+        // });
     </script>
 </body>
 </html>
