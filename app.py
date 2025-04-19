@@ -6,7 +6,7 @@ import logging
 from groq import query_groq
 
 app = Flask(__name__, 
-    static_folder='static',    # Explicitly set static folder
+    static_folder='static',   
     template_folder='templates' # Explicitly set template folder
 )
 
