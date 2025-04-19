@@ -10,7 +10,7 @@ app = Flask(__name__,
     template_folder='templates' # Explicitly set template folder
 )
 
-# Initialize conversation history
+
 history: list = []
 
 @app.route('/')
