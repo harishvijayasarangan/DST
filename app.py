@@ -7,7 +7,7 @@ from groq import query_groq
 
 app = Flask(__name__, 
     static_folder='static',   
-    template_folder='templates' # Explicitly set template folder
+    template_folder='templates' 
 )
 
 
